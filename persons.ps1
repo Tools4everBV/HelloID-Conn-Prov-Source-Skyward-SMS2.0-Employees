@@ -211,7 +211,7 @@ foreach($employee in $employees)
         [void]$person.Contracts.Add($contract);
     }
 
-   # Write-Output ($person | ConvertTo-Json -Depth 50);
+   Write-Output ($person | ConvertTo-Json -Depth 50);
 }
 #endregion Execute
 
