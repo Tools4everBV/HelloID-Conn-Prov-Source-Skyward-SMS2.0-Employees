@@ -1,10 +1,15 @@
+Write-Information "Processing Persons"
+
+#region Configuration
 $config = ConvertFrom-Json $configuration;
 $connectionString =  "DRIVER={Progress OpenEdge $($config.driver_version) driver};HOST=$($config.host_name);PORT=$($config.port);DB=$($config.database);UID=$($config.user);PWD=$($config.password);DIL=$($config.isolation_mode);AS=$($config.array_size);"
 
 if($config.enableETWT) { $connectionString += "ETWT=1;" }
 if($config.enableUWCT) { $connectionString += "UWCT=1;" }
 if($config.enableKA) { $connectionString += "KA=1;" }
- 
+#endregion Configuration
+
+#region Functions
 function get_data_objects {
 [cmdletbinding()]
 Param (
@@ -28,7 +33,20 @@ Param (
         @($result);
     }
 }
- 
+#endregion Functions
+
+#region Open VPN
+if($config.enableVPN) {
+    Write-Information "Opening VPN"
+    #Ensure VPN Connection is closed
+    &"$($config.vpnClosePath)" > $null 2>&1
+    
+    #Reopen VPN Connection
+    &"$($config.vpnOpenPath)" > $null 2>&1
+}
+#endregion Open VPN
+
+#region Execute
 $employees = get_data_objects `
             -connectionString $connectionString `
             -query 'SELECT    "HAAPRO-PROFILE"."NAME-ID"
@@ -55,7 +73,9 @@ $employees = get_data_objects `
 						FROM "PUB"."HAAPRO-PROFILE"
 						INNER JOIN "PUB"."NAME" ON "NAME"."NAME-ID" = "HAAPRO-PROFILE"."NAME-ID"
 						LEFT JOIN "PUB"."NAME-DUSER" ON "NAME-DUSER"."NAME-ID" = "HAAPRO-PROFILE"."NAME-ID"';
- 
+ Write-Information "$($employees.count) Employee Records";
+
+
  $assignments  = get_data_objects `
             -connectionString $connectionString `
             -query 'SELECT  DISTINCT
@@ -87,6 +107,7 @@ $employees = get_data_objects `
 						INNER JOIN "PUB"."HPMPLN-PLAN" ON "HPMPLN-PLAN"."HPMPLN-ID" = "HPMASN-ASSIGNMENTS"."HPMPLN-ID" AND "HPMPLN-SN-PLAN-X" = 0
 						WHERE "HAAPRO-PROFILE"."HAAPRO-ACTIVE" = 1 
 						AND "HPMPLN-PLAN"."HPMPLN-YEAR"  >= CAST(TO_CHAR(CURDATE(),''yyyy'') as int)-1'
+Write-Information "$($assignments.count) Assignment Records";
 
 $assignmentdescriptions = get_data_objects `
             -connectionString $connectionString `
@@ -95,6 +116,7 @@ $assignmentdescriptions = get_data_objects `
 						        , "HAADSC-DESC"
 						FROM "PUB"."HAADSC-DESCS" 
 						WHERE "HAADSC-IND" = ''ASSIG'''
+Write-Information "$($assignmentdescriptions.count) Assignment Description Records";
 
 $positions = get_data_objects `
             -connectionString $connectionString `
@@ -103,6 +125,7 @@ $positions = get_data_objects `
 						        , "HAADSC-DESC"
 						FROM "PUB"."HAADSC-DESCS" 
 						WHERE "HAADSC-IND" = ''POSIT'''
+Write-Information "$($positions.count) Position Records";
 
 $jobTypes = get_data_objects `
             -connectionString $connectionString `
@@ -111,7 +134,8 @@ $jobTypes = get_data_objects `
 						        , "HAADSC-DESC"
 						FROM "PUB"."HAADSC-DESCS" 
 						WHERE "HAADSC-IND" = ''JOBTP'''
- 
+ Write-Information "$($jobTypes.count) Job Type Records";
+
  $buildingCodes = get_data_objects `
             -connectionString $connectionString `
             -query 'SELECT   "HAABLD-BLD-CODE"
@@ -120,6 +144,7 @@ $jobTypes = get_data_objects `
 						       , "HAABLD-STATE-CODE"
 						       , "HAABLD-SCHOOL-TYPE"
 						FROM "PUB"."HAABLD-BLD-CODES"'
+Write-Information "$($buildingCodes.count) Building Code Records";
 
 foreach($employee in $employees)
 {
@@ -186,5 +211,15 @@ foreach($employee in $employees)
         [void]$person.Contracts.Add($contract);
     }
 
-    Write-Output ($person | ConvertTo-Json -Depth 50);
+   # Write-Output ($person | ConvertTo-Json -Depth 50);
 }
+#endregion Execute
+
+#region Close VPN
+if($config.enableVPN) {
+    Write-Information "Closing VPN"
+    &"$($config.vpnClosePath)" > $null 2>&1
+}
+#endregion Close VPN
+
+Write-Information "Finished Processing Persons"
