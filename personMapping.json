@@ -1,0 +1,150 @@
+{
+  "personMappings": [
+    {
+      "name": "Contact.Business.Email",
+      "mode": "field",
+      "value": "INTERNET_ADDRESS",
+      "validation": {
+        "required": false
+      }
+    },
+    {
+      "name": "Contact.Personal.Email",
+      "mode": "field",
+      "value": "INTERNET_ADDRESS_2",
+      "validation": {
+        "required": false
+      }
+    },
+    {
+      "name": "Contact.Personal.Phone.Fixed",
+      "mode": "field",
+      "value": "PRIMARY_PHONE",
+      "validation": {
+        "required": false
+      }
+    },
+    {
+      "name": "Custom.BuildingCode",
+      "mode": "field",
+      "value": "HAABLD_BLD_CODE",
+      "validation": {
+        "required": false
+      }
+    },
+    {
+      "name": "Custom.CheckLocation",
+      "mode": "field",
+      "value": "HPADCL_CHK_LOC_CODE",
+      "validation": {
+        "required": false
+      }
+    },
+    {
+      "name": "Custom.Role",
+      "mode": "fixed",
+      "value": "Employee",
+      "validation": {
+        "required": false
+      }
+    },
+    {
+      "name": "Details.BirthDate",
+      "mode": "field",
+      "value": "BIRTHDATE",
+      "validation": {
+        "required": false
+      }
+    },
+    {
+      "name": "ExternalId",
+      "mode": "field",
+      "value": "ExternalId",
+      "validation": {
+        "required": false
+      }
+    },
+    {
+      "name": "Name.FamilyName",
+      "mode": "field",
+      "value": "LAST_NAME",
+      "validation": {
+        "required": true
+      }
+    },
+    {
+      "name": "Name.FamilyNamePartnerPrefix",
+      "mode": "field",
+      "value": "MIDDLE_NAME",
+      "validation": {
+        "required": false
+      }
+    },
+    {
+      "name": "Name.GivenName",
+      "mode": "field",
+      "value": "FIRST_NAME",
+      "validation": {
+        "required": true
+      }
+    },
+    {
+      "name": "Name.NickName",
+      "mode": "field",
+      "value": "FIRST_NAME",
+      "validation": {
+        "required": true
+      }
+    }
+  ],
+  "contractMappings": [
+    {
+      "name": "Department.ExternalId",
+      "mode": "field",
+      "value": "HAABLD_BLD_CODE",
+      "validation": {
+        "required": false
+      }
+    },
+    {
+      "name": "EndDate",
+      "mode": "field",
+      "value": "EndDate",
+      "validation": {
+        "required": false
+      }
+    },
+    {
+      "name": "ExternalId",
+      "mode": "field",
+      "value": "ExternalId",
+      "validation": {
+        "required": false
+      }
+    },
+    {
+      "name": "StartDate",
+      "mode": "field",
+      "value": "StartDate",
+      "validation": {
+        "required": false
+      }
+    },
+    {
+      "name": "Title.ExternalId",
+      "mode": "field",
+      "value": "TitleId",
+      "validation": {
+        "required": false
+      }
+    },
+    {
+      "name": "Title.Name",
+      "mode": "field",
+      "value": "Title",
+      "validation": {
+        "required": false
+      }
+    }
+  ]
+}
